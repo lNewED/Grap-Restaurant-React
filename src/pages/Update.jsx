@@ -2,26 +2,32 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-const URL = import.meta.env.VITE_BASE_URL;
-const USERNAME = import.meta.env.VITE_BASE_USERNAME;
-const PASSWORD = import.meta.env.VITE_BASE_PASSWORD;
+const URL = import.meta.env.VITE_CYCLIC_URL //ตั้งชื่อในไฟล์ dotENV ควรเป็นตัวใหญ่ และ ต้องขึ้นต้นด้วย VITE เพราะเรา ใช้Reacy ร่วมกับ VITE
+const USERNAME = import.meta.env.VITE_CYCLIC_USERNAME
+const PASSWORD = import.meta.env.VITE_CYCLIC_PASSWORD
+
+console.log(URL);
+console.log(USERNAME);
+console.log(PASSWORD);
+
+
 const config = {
-  auth: {
-    username: USERNAME,
-    password: PASSWORD,
-  },
+    auth: {
+        username: USERNAME,
+        password: PASSWORD,
+    },
 };
 
 const Update = () => {
   const [restaurant, setRestaurants] = useState({
     name: "",
     type: "",
-    img: "",
+    Img: "",
   });
   const navigate = useNavigate();
   const [error, setError] = useState(false);
   const {restaurantId} = useParams();
-
+  console.log(restaurantId);
   const handleChange = (e) => {
     setRestaurants((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -31,7 +37,7 @@ const Update = () => {
     const fetchAllRestaurants = async () => {
         try {
             const res = await axios.get(
-                `${URL}/restaurant/${restaurantId}`,config
+                `${URL}/Food/${restaurantId}`,config
             );
             setRestaurants(res.data);
         } catch (error) {
@@ -44,7 +50,7 @@ const Update = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${URL}/restaurant/${restaurantId}`, restaurant, config);
+      await axios.put(`${URL}/Food/${restaurantId}`, restaurant, config);
       navigate("/");
     } catch (error) {
       console.error(error);
@@ -90,10 +96,10 @@ const Update = () => {
                 <input
                   type="text"
                   className="form-control"
-                  name="img"
+                  name="Img"
                   placeholder="Restaurant img"
                   onChange={handleChange}
-                  value={restaurant.img}
+                  value={restaurant.Img}
                 />
               </div>
 

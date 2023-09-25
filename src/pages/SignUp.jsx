@@ -14,22 +14,21 @@ const config = {
 };
 
 
-const Add = () => {
-  const[restaurant, setRestaurant] = useState({
+const SignUp = () => {
+  const[restaurant, setRestaurants] = useState({
     name:"",
     type:"",
-    Img:"",
+    img:""
   });
   const navigate = useNavigate();
   const [error, setError] = useState(false);
 
   const handleChange = (e) => {
-    setRestaurant((prev) => ({...prev, [e.target.name]:e.target.value}));
+    setRestaurants((prev) => ({...prev, [e.target.name]:e.target.value}));
   }
 
   const handleClick = async(e) => {
   e.preventDefault();
-  console.log(`${URL}/Food`);
   try {
     await axios.post(`${URL}/Food`, restaurant,config);
     navigate("/");
@@ -79,9 +78,9 @@ const Add = () => {
           <div className="from-group"  > 
             <label htmlFor="name">Restaurant img</label>
             <input type="text" className="form-control"
-            name="Img" placeholder="Restaurant img"
+            name="img" placeholder="Restaurant img"
             onChange={handleChange}
-            value={restaurant.Img}
+            value={restaurant.img}
             />
           </div>
 
@@ -98,4 +97,4 @@ const Add = () => {
   )
 }
 
-export default Add;
+export default SignUp;

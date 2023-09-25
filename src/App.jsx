@@ -5,6 +5,8 @@ import Add from './pages/Add';
 import Search from './pages/Search';
 import Navbar from './component/Navbar';
 import Update from './pages/Update';
+import Signin from './pages/Signin';
+import SignUp from './pages/SignUp';
 
 function App() {
 
@@ -15,9 +17,11 @@ function App() {
     <Navbar> </Navbar>
     <Routes>
       <Route path='/' element={<Restaurant />}/>
-      <Route path='/add' element={<Add />}/>
-      <Route path='/search' element={<Search />}/>
-      <Route path='/UpdateJung/:restaurantID' element={<Update />} />
+      <Route path='/Add' element={<Add />}/>
+      <Route path='/Search' element={<Search />}/>
+      <Route path='/UpdateJung/:restaurantId' element={<Update />} />
+      <Route path='/signin' element={<Signin />} />
+      <Route path='/signup' element={<SignUp />} />
     </Routes>
     </div>
     </BrowserRouter>
