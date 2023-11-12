@@ -7,26 +7,32 @@ import Navbar from './component/Navbar';
 import Update from './pages/Update';
 import Signin from './pages/Signin';
 import SignUp from './pages/SignUp';
+import Logout from './pages/Logout'
+import { AuthProvider } from './context/AuthContext';
+
+
 
 function App() {
 
 
   return (
     <BrowserRouter>
+    <AuthProvider>
+    <Navbar/>
     <div className='App'>
-    <Navbar> </Navbar>
     <Routes>
       <Route path='/' element={<Restaurant />}/>
+      <Route index element={<Restaurant/>}/>
       <Route path='/Add' element={<Add />}/>
       <Route path='/Search' element={<Search />}/>
-      <Route path='/UpdateJung/:restaurantId' element={<Update />} />
       <Route path='/signin' element={<Signin />} />
-      <Route path='/signup' element={<SignUp />} />
-    </Routes>
-    </div>
+      <Route path='/signUp' element={<SignUp />} />
+      <Route path='logout'  element={<Logout/>} />
+      <Route path='/UpdateJung/:restaurantId'element={<Update />} />
+      </Routes>
+      </div>
+    </AuthProvider>
     </BrowserRouter>
-    
-
   );
 }
 

@@ -1,100 +1,161 @@
-import React, {useState} from 'react'
-import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+// import * as React from 'react';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import authService from "../services/auth.service";
+// import { useAuthContext  } from '../context/auth.context'
 
-const URL = import.meta.env.VITE_CYCLIC_URL 
-const USERNAME = import.meta.env.VITE_CYCLIC_USERNAME
-const PASSWORD = import.meta.env.VITE_CYCLIC_PASSWORD
+// MUI framework
+import Button from "@mui/material/Button";
+import CssBaseline from "@mui/material/CssBaseline";
+import TextField from "@mui/material/TextField";
+import Grid from "@mui/material/Grid";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Container from "@mui/material/Container";
+import { ThemeProvider } from "@mui/material/styles";
+import { createTheme } from "@mui/material/styles";
+import { colors } from "@mui/material";
+import Swal from 'sweetalert2'
 
-const config = {
-  auth: {
-      username: USERNAME,
-      password: PASSWORD,
+const theme = createTheme({
+  palette: {
+    primary: {
+      light: "#757ce8",
+      main: "#ef6c00",
+      dark: "#fb8c00",
+      contrastText: "#fff",
+    },
+    secondary: {
+      light: "#ff7961",
+      main: "#f44336",
+      dark: "#ba000d",
+      contrastText: "#000",
+    },
   },
-};
+});
 
+// TODO remove, this demo shouldn't need to reset the theme.
 
-const Signin = () => {
-  const[restaurant, setRestaurants] = useState({
-    name:"",
-    type:"",
-    img:""
-  });
+export default function SignIn() {
+  const [error, setError] = useState({});
   const navigate = useNavigate();
-  const [error, setError] = useState(false);
+  // const {login} = useAuthContext();
+  const [user, setUser] = useState({
+    username: "",
+    password: "",
+  });
 
-  const handleChange = (e) => {
-    setRestaurants((prev) => ({...prev, [e.target.name]:e.target.value}));
-  }
 
-  const handleClick = async(e) => {
-  e.preventDefault();
-  try {
-    await axios.post(`${URL}/Food`, restaurant,config);
+  const handelChange = (e) => {
+    setUser((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const current = await authService.login(
+        user.username,
+        user.password
+      );
+      authService.login(current);
+      Swal.fire({
+        position: "center",
+        icon: "success",
+        title: "Login successed",
+        showConfirmButton: false,
+        timer: 1500
+      });
+      navigate("/");
+    } catch (error) {
+      setError(error);
+      console.log(error);
+    }
+  };
+  const handleCancel = () => {
     navigate("/");
-  } catch (error) {
-    console.error(error);
-    setError(true);
-  }
-  }
-
-  const handleClear = (e) => {
-    setRestaurant({
-      name:"",
-      type:"",
-      img:""
-    });
-    setError(false);
-    navigate("/")
-  }
+  };
 
   return (
-    <div className="container">
-      <h1>Grab Restaurant</h1>
-      <div className="row form">
-      <div className="col-6 justify-cintent-center">
-        <h5 className='card-header'> Add New Restaurant</h5>
-        <div className="error">{error && "Something went wrong !!"}</div>
-        <div className="card-body">
-          <form>
-            <div className="from-group"  > 
-            <label htmlFor="name">Restaurant Name</label>
-            <input type="text" className="form-control"
-            name="name" placeholder="Restaurant name"
-            onChange={handleChange}
-            value={restaurant.name}
+    <ThemeProvider theme={theme}>
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <Box
+          sx={{
+            marginTop: 8,
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+          }}
+        >
+          <Typography component="h1" variant="h5" marginTop={15}>
+            Sign in
+          </Typography>
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            noValidate
+            sx={{ mt: 1 }}
+          >
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              id="username"
+              label="Username"
+              onChange={handelChange}
+              value={user.username}
+              name="username"
+              autoComplete="username"
+              autoFocus
             />
-          </div>
-
-          <div className="from-group"  > 
-            <label htmlFor="name">Restaurant type</label>
-            <input type="text" className="form-control"
-            name="type" placeholder="Restaurant type"
-            onChange={handleChange}
-            value={restaurant.type}
+            <TextField
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              onChange={handelChange}
+              value={user.password}
+              type="password"
+              id="password"
+              autoComplete="current-password"
             />
-          </div>
-
-          <div className="from-group"  > 
-            <label htmlFor="name">Restaurant img</label>
-            <input type="text" className="form-control"
-            name="img" placeholder="Restaurant img"
-            onChange={handleChange}
-            value={restaurant.img}
-            />
-          </div>
-
-          
-
-          <Link to="" className="btn btn-success" onClick={handleClick}>Add</Link>
-          {""}
-          <Link to="/" className="btn btn-danger" onClick={handleClear}>Cancle</Link>
-          </form>
-        </div>
-      </div>
-      </div>
-    </div>
-  )
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{ mt: 3, mb: 2 }}
+            >
+              Sign In
+            </Button>
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="secondary"
+              sx={{ mb: 2 }}
+              onClick={handleCancel}
+            >
+              cancel
+            </Button>
+            <Grid container>
+              <Grid item sm={12}>
+                <Typography fontSize={15}>
+                  Don't have an account?{" "}
+                  <Link
+                    to="/signup"
+                    variant="body2"
+                    style={{colors:"#ef6c00"}}
+                    spacing={6}
+                  >
+                    Sign Up
+                  </Link>
+                </Typography>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Container>
+    </ThemeProvider>
+  );
 }
-
-export default Signin;

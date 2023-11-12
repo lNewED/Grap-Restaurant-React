@@ -37,7 +37,7 @@ const Update = () => {
     const fetchAllRestaurants = async () => {
         try {
             const res = await axios.get(
-                `${URL}/Food/${restaurantId}`,config
+                `${URL}/restaurant/${restaurantId}`,config
             );
             setRestaurants(res.data);
         } catch (error) {
@@ -50,7 +50,7 @@ const Update = () => {
   const handleClick = async (e) => {
     e.preventDefault();
     try {
-      await axios.put(`${URL}/Food/${restaurantId}`, restaurant, config);
+      await axios.put(`${URL}/restaurant/${restaurantId}`, restaurant, config);
       navigate("/");
     } catch (error) {
       console.error(error);

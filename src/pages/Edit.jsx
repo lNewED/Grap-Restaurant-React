@@ -1,10 +1,8 @@
-/* eslint-disable no-unused-vars */
 import React from "react";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-// MUI framework
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
@@ -14,7 +12,6 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { ThemeProvider } from "@mui/material/styles";
 import { createTheme } from "@mui/material/styles";
-import { colors } from "@mui/material";
 import Swal from 'sweetalert2'
 
 const URL = import.meta.env.VITE_BASE_URL;
@@ -25,7 +22,7 @@ const config = {
     username: USERNAME,
     password: PASSWORD,
   },
-  //   headers : authHeader(),
+  // headers : authHeader(),
 };
 
 const theme = createTheme({
@@ -45,7 +42,7 @@ const theme = createTheme({
   },
 });
 
-export default function Add() {
+export default function Edit() {
   const [restaurant, setRestaurant] = useState({
     name: "",
     type: "",
@@ -53,18 +50,30 @@ export default function Add() {
   });
   const navigate = useNavigate();
   const [error, setError] = useState(false);
-
+  const { restaurantId } = useParams();
   const handelChange = (e) => {
     setRestaurant((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+  useEffect(() => {
+    const fetchAllRestaurants = async () => {
+      try {
+        const res = await axios.get(`${URL}/restaurant/${restaurantId}`);
+        setRestaurant(res.data.result);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchAllRestaurants();
+  }, [restaurantId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${URL}/restaurant`, restaurant, config);
+      await axios.put(`${URL}/restaurant/${restaurantId}`, restaurant, config);
       Swal.fire({
         position: "center",
         icon: "success",
-        title: "Add new Restaurant successed",
+        title: `Update restaurant ${restaurantId} successed`,
         showConfirmButton: false,
         timer: 1500
       });
@@ -74,6 +83,7 @@ export default function Add() {
       setError(true);
     }
   };
+
   const handleCancel = () => {
     Swal.fire({
       title: "Are you sure?",
@@ -93,7 +103,6 @@ export default function Add() {
         navigate("/");
       }
     });
-
   };
 
   return (
@@ -109,11 +118,11 @@ export default function Add() {
           }}
         >
           <Typography component="h1" variant="h5" marginTop={15}>
-            Add new Restaurant
+            Edit Restaurant
           </Typography>
           {/* <Box
             component="form"
-
+            onSubmit={handleSubmit}
             noValidate
             sx={{ mt: 1 }}
           > */}
@@ -160,7 +169,7 @@ export default function Add() {
               sx={{ mt: 3, mb: 2 }}
               onClick={handleSubmit}
             >
-              Add
+              Edit
             </Button>
             <Button
               type="submit"
@@ -178,4 +187,4 @@ export default function Add() {
   );
 }
 
-// export default Add;
+// export default Edit

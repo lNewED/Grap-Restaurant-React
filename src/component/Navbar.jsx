@@ -1,38 +1,115 @@
-import React from 'react'
-import {Link} from "react-router-dom"
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { Link, useNavigate } from "react-router-dom";
+import { useAuthContext } from "../context/auth.context";
+import Swal from 'sweetalert2'
 
-const Navbar = () => {
+const Nevbar = () => {
+  const { user, logout } = useAuthContext();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You want to logout",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes"
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: "Logout",
+          text: "Logout successed",
+          icon: "success"
+        });
+        logout();
+        navigate("/signin"); 
+      }
+    });
+  };
+  const linkStyle = {
+    color: '#fff',
+    fontSize: '25px',
+  };
+
   return (
-    <nav className="navbar navbar-expand-lg navbar-light bg-light">
-  <div className="container-fluid">
-    <Link className="navbar-brand" to="/">Graprestaurant</Link>
-    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span className="navbar-toggler-icon"></span>
-    </button>
-    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-        <li className="nav-item">
-          <Link className="nav-link active" aria-current="page" to="/">Home</Link>
-        </li>
-        <li className="nav- item">
-          <Link className="nav-link " to="/add">Add</Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link " to="/search"  >Search</Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link " to="/signin"  >Signin</Link>
-        </li>
-        <li className="nav-item">
-          <Link className="nav-link " to="/signup"  >SignUp</Link>
-        </li>
-      </ul>
+    <nav className="navbar navbar-expand-lg  " style={{ backgroundColor: "#ef6c00" }}>
+      <div className="container-fluid">
+        <Link className="navbar-brand" to="/" style={linkStyle}>
+          <b>Restaurant</b>
+        </Link>
+        <button
+          className="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span className="navbar-toggler-icon"></span>
+        </button>
 
-    </div>
-  </div>
-</nav>
-  )
-}
+        {user && user.roles && user.roles.includes("ROLES_ADMIN") && (
+          <ul className="nav">
+            <li className="nav-item">
+              <Link className="nav-link " style={{ color: "#fff" }} to="/add">
+                Add
+              </Link>
+            </li>
+          </ul>
+        )}
+        <div className="Signin">
+          {!user && (
+            <ul className="nav justify-content-end">
+              <li className="nav-item">
+                <Link
+                  className="nav-link active"
+                  style={{ color: "#fff" }}
+                  aria-current="page"
+                  to="/signin"
+                >
+                  Login
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link active"
+                  style={{ color: "#fff" }}
+                  aria-current="page"
+                >
+                  /
+                </Link>
+              </li>
+              <li className="nav-item ">
+                <Link
+                  className="nav-link"
+                  style={{ color: "#fff" }}
+                  to="/signup"
+                >
+                  Register
+                </Link>
+              </li>
+            </ul>
+          )}
+          {user && (
+            <ul className="nav justify-content-end ">
+              <li className="nav-item">
+                <Link className="nav-link" to={"/profile"} style={{ color: "#fff" }} >{user.username}</Link>
+                <Link
+                  className="nav-link"
+                  style={{ color: "#fff" }}
+                  to="/logout"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Link>
+              </li>
+            </ul>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
+};
 
-export default Navbar;
+export default Nevbar;
